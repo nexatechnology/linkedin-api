@@ -51,6 +51,7 @@ class Client(object):
         self, *, debug=False, refresh_cookies=False, proxies={}, cookies_dir=None
     ):
         self.session = requests.session()
+        self.session.verify = False
         self.session.proxies.update(proxies)
         self.session.headers.update(Client.REQUEST_HEADERS)
         self.proxies = proxies
@@ -71,6 +72,7 @@ class Client(object):
             f"{Client.LINKEDIN_BASE_URL}/uas/authenticate",
             headers=Client.AUTH_REQUEST_HEADERS,
             proxies=self.proxies,
+            verify=False,
         )
         return res.cookies
 
@@ -111,9 +113,10 @@ class Client(object):
             cookies=self.session.cookies,
             headers=Client.AUTH_REQUEST_HEADERS,
             proxies=self.proxies,
+            verify=False,
         )
 
-        soup = BeautifulSoup(res.text, "lxml")
+        soup = BeautifulSoup(res.text, "html.parser")
 
         clientApplicationInstanceRaw = soup.find(
             "meta", attrs={"name": "applicationInstance"}
@@ -152,6 +155,7 @@ class Client(object):
             cookies=self.session.cookies,
             headers=Client.AUTH_REQUEST_HEADERS,
             proxies=self.proxies,
+            verify=False,
         )
 
         data = res.json()
