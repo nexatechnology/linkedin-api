@@ -1483,3 +1483,14 @@ class Linkedin(object):
             return {}
 
         return data
+
+    def get_job_contract_type(self, job_id):
+        uri = f'https://www.linkedin.com/jobs/view/{job_id}/'
+        r = str(self.client.session.get(uri).content)
+
+        if '&quot;text&quot;:&quot;Full-time&quot;' in r:
+            return 'employee'
+        elif '&quot;text&quot;:&quot;Contract&quot;' in r:
+            return 'external'
+        else:
+            return None
